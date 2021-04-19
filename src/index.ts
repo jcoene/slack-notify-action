@@ -50,11 +50,10 @@ function buildPayload(jobName: string, jobStatus: string): IncomingWebhookSendAr
   const refLabel = ref;
   const refUrl = `${repoUrl}/tree/${ref}`;
 
-  console.log('ENV:', JSON.stringify(process.env));
-  console.log('github.context:', JSON.stringify(github.context));
+  const commit = payloadToCommit(github.context.payload);
 
   // prettier-ignore
-  const text = [
+  const title = [
     `${label}:`,
     `${actor}'s`,
     `<${runUrl}|${runLabel}>`,
@@ -63,6 +62,8 @@ function buildPayload(jobName: string, jobStatus: string): IncomingWebhookSendAr
     `<${repoUrl}|${repo}>`,
     `(<${refUrl}|${refLabel}>)`,
   ].join(' ');
+
+  const text = [title, commit].filter(v => !!v).join('\n');
 
   return {
     attachments: [
@@ -73,6 +74,17 @@ function buildPayload(jobName: string, jobStatus: string): IncomingWebhookSendAr
       },
     ],
   };
+}
+
+function payloadToCommit(payload?: any): string {
+  const commit = payload?.head_commit;
+  if (!commit || !commit.id || !commit.url) {
+    return '';
+  }
+
+  const author = commit.author?.username || commit.committer?.username || 'unknown';
+
+  return `- ${commit.message} (<${commit.url}|${commit.id.slice(0, 8)}> by ${author}`;
 }
 
 function statusToLabel(jobStatus: string): string {

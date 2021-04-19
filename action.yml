@@ -1,0 +1,11 @@
+name: 'Slack Notify'
+description: 'Send a job status notification to Slack'
+inputs:
+  job_name:
+    description: The name of the job
+  job_status:
+    description: The status of the job
+outputs:
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -5,7 +5,6 @@ inputs:
     description: The name of the job
   job_status:
     description: The status of the job
-outputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -8968,9 +8968,9 @@ function buildPayload(jobName, jobStatus) {
     const repo = `${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner}/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo}`;
     const repoUrl = `https://github.com/${repo}`;
     const runLabel = jobName;
-    const runUrl = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.runId ? `${repoUrl}/runs/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.runId}` : '';
+    const runUrl = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.runId ? `${repoUrl}/actions/runs/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.runId}` : '';
     const commitLabel = ((_a = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha) === null || _a === void 0 ? void 0 : _a.slice(0, 8)) || '???????';
-    const commitUrl = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha ? `${repoUrl}/commits/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha}` : '';
+    const commitUrl = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha ? `${repoUrl}/commit/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha}` : '';
     const actor = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor || 'unknown';
     const ref = ((_b = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref) === null || _b === void 0 ? void 0 : _b.replace(/refs\/.+?\//, '')) || '';
     const refLabel = ref;
@@ -9004,7 +9004,7 @@ function payloadToCommit(payload) {
         return '';
     }
     const author = ((_a = commit.author) === null || _a === void 0 ? void 0 : _a.username) || ((_b = commit.committer) === null || _b === void 0 ? void 0 : _b.username) || 'unknown';
-    return `- ${commit.message} (<${commit.url}|${commit.id.slice(0, 8)}> by ${author}`;
+    return `- ${commit.message} (<${commit.url}|${commit.id.slice(0, 8)}> by ${author})`;
 }
 function statusToLabel(jobStatus) {
     return jobStatus.charAt(0).toUpperCase() + jobStatus.slice(1);

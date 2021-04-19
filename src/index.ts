@@ -39,10 +39,10 @@ function buildPayload(jobName: string, jobStatus: string): IncomingWebhookSendAr
   const repoUrl = `https://github.com/${repo}`;
 
   const runLabel = jobName;
-  const runUrl = github.context.runId ? `${repoUrl}/runs/${github.context.runId}` : '';
+  const runUrl = github.context.runId ? `${repoUrl}/actions/runs/${github.context.runId}` : '';
 
   const commitLabel = github.context.sha?.slice(0, 8) || '???????';
-  const commitUrl = github.context.sha ? `${repoUrl}/commits/${github.context.sha}` : '';
+  const commitUrl = github.context.sha ? `${repoUrl}/commit/${github.context.sha}` : '';
 
   const actor = github.context.actor || 'unknown';
 
@@ -84,7 +84,7 @@ function payloadToCommit(payload?: any): string {
 
   const author = commit.author?.username || commit.committer?.username || 'unknown';
 
-  return `- ${commit.message} (<${commit.url}|${commit.id.slice(0, 8)}> by ${author}`;
+  return `- ${commit.message} (<${commit.url}|${commit.id.slice(0, 8)}> by ${author})`;
 }
 
 function statusToLabel(jobStatus: string): string {

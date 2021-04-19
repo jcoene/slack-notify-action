@@ -8948,7 +8948,6 @@ try {
     });
     // Build payload
     const payload = buildPayload(jobName, jobStatus);
-    console.log('Payload:', JSON.stringify(payload));
     // Build client
     const options = {};
     const client = new _slack_webhook__WEBPACK_IMPORTED_MODULE_2__/* .IncomingWebhook */ .QU(slackWebhookUrl, options);

@@ -17,7 +17,6 @@ try {
 
   // Build payload
   const payload = buildPayload(jobName, jobStatus);
-  console.log('Payload:', JSON.stringify(payload));
 
   // Build client
   const options: IncomingWebhookDefaultArguments = {};

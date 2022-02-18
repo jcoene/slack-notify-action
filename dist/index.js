@@ -8961,8 +8961,29 @@ try {
 catch (error) {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
 }
-function buildPayload(jobName, jobStatus) {
+function buildPayload(rawName, rawStatus) {
     var _a, _b;
+    const jobNames = rawName.split(',').map(s => s.trim());
+    const jobStatuses = rawStatus.split(',').map(s => s.trim());
+    let jobName = jobNames[0];
+    let jobStatus = jobStatuses[0];
+    if (jobNames.length > 1 && jobNames.length === jobStatuses.length) {
+        const succeeded = jobNames.filter((_, i) => jobStatuses[i] === 'success');
+        const failed = jobNames.filter((_, i) => jobStatuses[i] === 'failure');
+        const cancelled = jobNames.filter((_, i) => jobStatuses[i] === 'cancelled');
+        if (failed.length > 0) {
+            jobName = failed.length === 1 ? failed[0] : 'workflow';
+            jobStatus = 'failure';
+        }
+        else if (cancelled.length > 0) {
+            jobName = cancelled.length === 1 ? cancelled[0] : 'workflow';
+            jobStatus = 'cancelled';
+        }
+        else {
+            jobName = succeeded.length === 1 ? succeeded[0] : 'workflow';
+            jobStatus = 'success';
+        }
+    }
     const label = statusToLabel(jobStatus);
     const repo = `${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner}/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo}`;
     const repoUrl = `https://github.com/${repo}`;

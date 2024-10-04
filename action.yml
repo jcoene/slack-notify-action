@@ -8,5 +8,5 @@ inputs:
   slack_webhook_url:
     description: The Slack webhook URL to use for message delivery
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

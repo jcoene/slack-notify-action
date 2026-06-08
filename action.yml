@@ -3,10 +3,17 @@ description: 'Send a job status notification to Slack'
 inputs:
   job_name:
     description: The name of the job
+    required: true
   job_status:
     description: The status of the job
+    required: true
   slack_webhook_url:
     description: The Slack webhook URL to use for message delivery
+    required: true
+  show_commit:
+    description: Whether to include the commit details in the message
+    required: false
+    default: 'false'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'

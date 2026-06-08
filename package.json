@@ -1,31 +1,35 @@
 {
   "name": "slack-notify-action",
-  "version": "2.0.0",
+  "version": "5.0.0",
   "description": "GitHub Action to send a job status notification to Slack",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.ts -o dist",
-    "test": "prettier -l 'src/**/*.ts'"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.ts'",
+    "format:check": "prettier --check 'src/**/*.ts'",
+    "test": "npm run typecheck && npm run format:check"
   },
   "prettier": {
     "arrowParens": "avoid",
     "bracketSpacing": true,
-    "jsxBracketSameLine": true,
     "printWidth": 140,
     "singleQuote": true,
-    "trailingComma": "all",
-    "parser": "babel-ts"
+    "trailingComma": "all"
   },
   "author": "Jason Coene",
   "license": "ISC",
   "dependencies": {
-    "@actions/core": "^1.2.7",
-    "@actions/github": "^4.0.0",
-    "@slack/webhook": "^6.0.0"
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1",
+    "@slack/webhook": "^7.0.9"
+  },
+  "overrides": {
+    "undici": "^6.26.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.28.3",
-    "prettier": "^2.2.1",
-    "typescript": "^4.2.4"
+    "@vercel/ncc": "^0.38.4",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   }
 }

@@ -2,37 +2,34 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { IncomingWebhook, IncomingWebhookDefaultArguments, IncomingWebhookSendArguments } from '@slack/webhook';
 
-const statusColors = {
+const statusColors: Record<string, string> = {
   success: 'good',
   failure: 'danger',
   cancelled: 'warning',
 };
 
-try {
+async function run(): Promise<void> {
   const jobName = core.getInput('job_name', { required: true });
   const jobStatus = core.getInput('job_status', { required: true });
-  const slackWebhookUrl = core.getInput('slack_webhook_url', {
-    required: true,
-  });
+  const slackWebhookUrl = core.getInput('slack_webhook_url', { required: true });
+  const showCommit = core.getBooleanInput('show_commit');
 
   // Build payload
-  const payload = buildPayload(jobName, jobStatus);
+  const payload = buildPayload(jobName, jobStatus, showCommit);
 
   // Build client
   const options: IncomingWebhookDefaultArguments = {};
   const client = new IncomingWebhook(slackWebhookUrl, options);
 
-  client.send(payload).then(res => {
-    if (res.text !== 'ok') {
-      throw new Error(`Failed to send notification to Slack: ${res.text}`);
-    }
-    console.log('ok!');
-  });
-} catch (error: any) {
-  core.setFailed(error.message);
+  const res = await client.send(payload);
+  if (res.text !== 'ok') {
+    throw new Error(`Failed to send notification to Slack: ${res.text}`);
+  }
+
+  core.info('ok!');
 }
 
-function buildPayload(rawName: string, rawStatus: string): IncomingWebhookSendArguments {
+function buildPayload(rawName: string, rawStatus: string, showCommit: boolean): IncomingWebhookSendArguments {
   const jobNames = rawName.split(',').map(s => s.trim());
   const jobStatuses = rawStatus.split(',').map(s => s.trim());
 
@@ -71,7 +68,7 @@ function buildPayload(rawName: string, rawStatus: string): IncomingWebhookSendAr
   const refLabel = ref;
   const refUrl = `${repoUrl}/tree/${ref}`;
 
-  const commit = payloadToCommit(github.context.payload);
+  const commit = showCommit ? payloadToCommit(github.context.payload) : '';
 
   // prettier-ignore
   const title = [
@@ -115,3 +112,7 @@ function statusToLabel(jobStatus: string): string {
 function statusToColor(jobStatus: string): string {
   return statusColors[jobStatus] || '';
 }
+
+run().catch(error => {
+  core.setFailed(error instanceof Error ? error.message : String(error));
+});
